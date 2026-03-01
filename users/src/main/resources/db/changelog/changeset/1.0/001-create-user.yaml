@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: artsobol
+
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_users
+
+              - column:
+                  name: telegram_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: username
+                  type: varchar(32)
+
+              - column:
+                  name: first_name
+                  type: varchar(255)
+
+              - column:
+                  name: last_name
+                  type: varchar(255)
+
+              - column:
+                  name: role
+                  type: varchar(16)
+
+              - column:
+                  name: language_code
+                  type: varchar(2)
+
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_users_telegram_id
+            tableName: users
+            columns:
+              - column:
+                  name: telegram_id
+
+        - createSequence:
+            sequenceName: seq_users
+
+        - addDefaultValue:
+            tableName: users
+            columnName: id
+            defaultValueSequenceNext: seq_users
+
+      rollback:
+        - dropSequence:
+            sequenceName: seq_users
+        - dropIndex:
+            indexName: idx_users_telegram_id
+            tableName: users
+        - dropTable:
+            tableName: users
